@@ -16,6 +16,7 @@ dp = Dispatcher(bot)
 
 stickers = get_stickers()
 
+
 @dp.message_handler()
 async def echo(message: types.Message):
 
@@ -43,13 +44,9 @@ async def echo(message: types.Message):
             await message.answer('Хули то тут так мало?')
             return
 
-        file = open(str(message.chat.id) + '.txt', 'r', encoding='utf8')
-        count = count_lines(file.readlines())
-        if count < 50:
-            file.close()
-            await message.answer('Слишком мало данных для генерации')
+        if not isEnoughData(str(message.chat.id) + '.txt'):
+            await message.answer('Недостаточно данных для генерации сообщений.')
             return
-        file.close()
 
         rnd = random.randint(0, 4)
         if rnd == 0:
@@ -61,20 +58,16 @@ async def echo(message: types.Message):
 
     msg = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', message.text, flags=re.MULTILINE)
     msg = re.sub(r'(А+Х+)+', '', msg, flags=re.MULTILINE)
+    msg = re.sub(r'(а+х+)+', '', msg, flags=re.MULTILINE)
     msg = re.sub(r'@NeuraliaRemmy_bot', '', msg, flags=re.MULTILINE)
     if msg != " " or msg != "":
-        file = open(str(message.chat.id) + '.txt', 'a+', encoding='utf8')
-        file.seek(0, 2)
-        file.write(msg + '\n')
-        file.close()
+        saveData(str(message.chat.id) + '.txt', msg)
 
     if random.randint(0, 100) >= 80:
-        file = open(str(message.chat.id) + '.txt', 'r', encoding='utf8')
-        count = count_lines(file.readlines())
-        if count < 50:
-            file.close()
+
+        if not isEnoughData(str(message.chat.id) + '.txt'):
             return
-        file.close()
+
         rnd = random.randint(0, 4)
         if rnd == 0:
             await message.answer(GenerateMessage(str(message.chat.id) + '.txt', random.randint(0, 20)).upper())
@@ -95,6 +88,24 @@ async def echo(message: types.Message):
 
 def bot_check():
     return bot.get_me()
+
+
+def isEnoughData(path):
+    file = open(path, 'r', encoding='utf8')
+    count = count_lines(file.readlines())
+    if count < 100:
+        file.close()
+        return False
+    else:
+        file.close()
+        return True
+
+
+def saveData(path, msg):
+    file = open(path, 'a+', encoding='utf8')
+    file.seek(0, 2)
+    file.write(msg + '\n')
+    file.close()
 
 
 if __name__ == '__main__':
