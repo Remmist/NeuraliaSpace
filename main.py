@@ -91,7 +91,10 @@ def bot_check():
 
 
 def isEnoughData(path):
-    file = open(path, 'r', encoding='utf8')
+    try:
+        file = open(path, 'r', encoding='utf8')
+    except FileNotFoundError:
+        return False
     count = count_lines(file.readlines())
     if count < 100:
         file.close()
