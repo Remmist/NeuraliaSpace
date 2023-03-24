@@ -18,6 +18,10 @@ stickers = get_stickers()
 
 @dp.message_handler()
 async def echo(message: types.Message):
+
+    if message.is_forward():
+        return
+
     if message.text.startswith('N что ты умеешь'):
         await message.answer('мой папа меня научил:\n·N say (количество слов)\n·N отправь стикер\n·N кто тебя создал')
         return
