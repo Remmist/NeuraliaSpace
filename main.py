@@ -56,21 +56,21 @@ async def echo(message: types.Message):
             await message.answer(GenerateMessage(str(message.chat.id) + '.txt', int(text[2]) - 1).capitalize())
         return
 
-    msg = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', message.text, flags=re.MULTILINE)
+    msg = re.sub(r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})', '', message.text, flags=re.MULTILINE)
     msg = re.sub(r'(А+Х+)+', '', msg, flags=re.MULTILINE)
     msg = re.sub(r'(а+х+)+', '', msg, flags=re.MULTILINE)
     msg = re.sub(r'@NeuraliaRemmy_bot', '', msg, flags=re.MULTILINE)
     if msg != " " or msg != "":
         saveData(str(message.chat.id) + '.txt', msg)
 
-    if random.randint(0, 100) >= 80:
+    if random.randint(0, 100) >= 90:
 
         if not isEnoughData(str(message.chat.id) + '.txt'):
             return
 
         rnd = random.randint(0, 4)
         if rnd == 0:
-            await message.answer(GenerateMessage(str(message.chat.id) + '.txt', random.randint(0, 20)).upper())
+            await message.answer(GenerateMessage(str(message.chat.id) + '.txt', random.randint(0, 10)).upper())
             if random.randint(0, 100) > 60:
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
@@ -80,7 +80,7 @@ async def echo(message: types.Message):
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
         else:
-            await message.answer(GenerateMessage(str(message.chat.id) + '.txt', random.randint(0, 20)).capitalize())
+            await message.answer(GenerateMessage(str(message.chat.id) + '.txt', random.randint(0, 10)).capitalize())
             if random.randint(0, 100) > 60:
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
