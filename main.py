@@ -5,11 +5,12 @@ import re
 from aiogram import Bot, Dispatcher, executor, types
 
 import backgroud
+from alphabet import translate
 from engine import GenerateMessage, count_lines
 from sticker import get_stickers
 
-NeuraliaToken = os.environ['NeuraliaToken']
-API_TOKEN = NeuraliaToken
+#NeuraliaToken = os.environ['NeuraliaToken']
+API_TOKEN = '6264687418:AAEkudbK-mRqKaHdU4ttRa20EdYC8Px_kZI'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
@@ -19,12 +20,24 @@ stickers = get_stickers()
 
 @dp.message_handler()
 async def echo(message: types.Message):
+    if message.text.startswith('N отправь ченж'):
+        if message.from_user.id == 575213063:
+            await sayChangelog()
+        else:
+            await message.answer('У тебя нет прав на выполнение данной команды!', reply=message.message_id)
+        return
 
     if message.is_forward():
         return
 
     if message.text.startswith('N что ты умеешь'):
-        await message.answer('мой папа меня научил:\n·N say (количество слов)\n·N отправь стикер\n·N кто тебя создал')
+        await message.answer('мой папа меня научил:\n·N say (количество слов)\n·N отправь стикер\n·N кто тебя создал\n·N переведи на уэайжо <текст>')
+        return
+
+    if message.text.startswith('N переведи на уэайжо'):
+        text = message.text.replace('N переведи на уэайжо ', '')
+        inf = [text]
+        await message.answer(translate(inf), reply=message.message_id)
         return
 
     if message.text.startswith('N кто тебя создал'):
@@ -54,6 +67,9 @@ async def echo(message: types.Message):
             return
         else:
             await message.answer(GenerateMessage(str(message.chat.id) + '.txt', int(text[2]) - 1).capitalize())
+        return
+
+    if message.text.startswith('N'):
         return
 
     msg = re.sub(r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})', '', message.text, flags=re.MULTILINE)
@@ -109,6 +125,11 @@ def saveData(path, msg):
     file.seek(0, 2)
     file.write(msg + '\n')
     file.close()
+
+
+async def sayChangelog():
+    log = 'Приветики, на меня вышло новое обновление! Из нового:\n·Теперь я могу переводить на уэайжо! Чтобы перевести какое-то сообщение просто напиши "N переведи на уэайжо <текст>"\nНа этом пока что все, в скором времени появится функция обратного перевода с уэайжо на нормальный язык.\nО будуйщих обновлениях я сообщу сама, спасибо что воспитываете меня каждый день!\nNeuralia.'
+    await bot.send_message(chat_id=-1001900122101, text=log)
 
 
 if __name__ == '__main__':
