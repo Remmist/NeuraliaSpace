@@ -9,8 +9,8 @@ from alphabet import translate
 from engine import GenerateMessage, count_lines
 from sticker import get_stickers
 
-#NeuraliaToken = os.environ['NeuraliaToken']
-API_TOKEN = '6264687418:AAEkudbK-mRqKaHdU4ttRa20EdYC8Px_kZI'
+NeuraliaToken = os.environ['NeuraliaToken']
+API_TOKEN = NeuraliaToken
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
