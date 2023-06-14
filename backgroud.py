@@ -9,7 +9,7 @@ app = Flask('')
 @app.route('/')
 def home():
     if main.bot_check():
-        return "Neuralia is alive, all ok"
+        return "Neuralia is alive.\n@raiseeve"
     else:
         print("Problems with bot")
 
