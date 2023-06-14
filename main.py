@@ -141,9 +141,9 @@ async def sayChangelog():
     log = open('changelog.txt', 'r', encoding='utf8').read()
     project_directory = os.getcwd()
     file_list = os.listdir(project_directory)
-    txt_files = [file for file in file_list if file.endswith(".txt")]
+    txt_files = [file for file in file_list if file.endswith(".txt") and (str(file) != 'changelog.txt' and str(file) != 'hello.txt' and str(file) != 'stickers.txt' and str(file) != 'stickers_present.txt')]
     for chat in txt_files:
-        await bot.send_message(chat_id=chat, text=log)
+        await bot.send_message(chat_id=str(chat), text=log)
     # -1001900122101
 
 
