@@ -37,7 +37,7 @@ async def echo(message: types.Message):
 
     # LIST OF COMMANDS
     if message.text.startswith('N что ты умеешь'):
-        await message.reply('Я умею следующее:\n·N say <количество слов>\n·N отправь стикер\n·N кто тебя создал\n·N переведи на уэайжо <текст>')
+        await message.reply('Я умею следующее:\n·N say <количество слов или large (l), small (s), medium (m)>\n·N отправь стикер\n·N кто тебя создал\n·N переведи на уэайжо <текст>')
         return
 
     # TRANSLATE TEXT TO УЭАЙЖО LANGUAGE

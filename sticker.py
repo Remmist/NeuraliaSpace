@@ -1,5 +1,5 @@
 def get_stickers():
-    file = open('stickers_present.txt', 'r', encoding='utf8')
+    file = open('stickers.txt', 'r', encoding='utf8')
     lines = file.readlines()
     stickers = []
     for line in lines:
