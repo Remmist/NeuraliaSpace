@@ -11,7 +11,11 @@ def make_pairs(corpus):
 
 # MAIN METHOD TO GENERATE MESSAGES (MARKOV'S CHAIN)
 def GenerateMessage(path, quantity):
-    file = open(path, encoding='utf8').read()
+    project_directory = os.getcwd()
+    chats_directory = os.path.join(project_directory, 'chats')
+    chat = path
+    chat_path = os.path.join(chats_directory, chat)
+    file = open(chat_path, encoding='utf8').read()
     corpus = file.split()
     pairs = make_pairs(corpus)
 
