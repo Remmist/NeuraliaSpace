@@ -120,7 +120,11 @@ async def echo(message: types.Message):
 
     # SAVING MESSAGE
     if msg != ' ' or msg != '' or msg.__len__() != 1 or msg.__len__() != 0:
-        saveData(str(message.chat.id) + '.txt', msg)
+        project_directory = os.getcwd()
+        chats_directory = os.path.join(project_directory, 'chats')
+        chat = '' + message.chat.id + '.txt'
+        path = os.path.join(chats_directory, chat)
+        saveData(path, msg)
 
     # GENERATING NEW MESSAGE TO CHAT
     if random.randint(0, 100) >= 90:
@@ -147,8 +151,8 @@ async def echo(message: types.Message):
 
 
 # METHOD TO CHECK BOT STATUS FOR FLASK SERVER
-async def bot_check():
-    return await bot.get_me()
+def bot_check():
+    return bot.get_me()
 
 
 # METHOD TO SEND CHANGELOG IN CHAT
