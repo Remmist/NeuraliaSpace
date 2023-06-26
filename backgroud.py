@@ -7,8 +7,8 @@ app = Flask('')
 
 
 @app.route('/')
-def home():
-    if main.bot_check():
+async def home():
+    if await main.bot_check():
         return "Neuralia is alive.\n@raiseeve"
     else:
         print("Problems with bot")

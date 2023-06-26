@@ -5,7 +5,7 @@ import re
 from aiogram import Bot, Dispatcher, executor, types
 
 import backgroud
-from alphabet import translate
+from alphabet import translate, retranslate, getAlphabet
 from engine import GenerateMessage, isEnoughData, saveData
 from sticker import get_stickers
 
@@ -22,6 +22,7 @@ async def echo(message: types.Message):
     if message.text == '/start' or message.text == '/help' or message.text == 'help' or message.text == 'start':
         hello = open('hello.txt', 'r', encoding='utf8').read()
         await message.reply(hello)
+        return
 
     # SEND CHANGELOG COMMAND
     if message.text.startswith('N отправь ченж'):
@@ -37,7 +38,13 @@ async def echo(message: types.Message):
 
     # LIST OF COMMANDS
     if message.text.startswith('N что ты умеешь'):
-        await message.reply('Я умею следующее:\n·N say <количество слов или large (l), small (s), medium (m)>\n·N отправь стикер\n·N кто тебя создал\n·N переведи на уэайжо <текст>')
+        await message.reply('Я умею следующее:\n·N say <количество слов или large (l), small (s), medium (m)>\n·N отправь стикер\n·N кто тебя создал\n·N переведи на уэайжо <текст>\n·N переведи c уэайжо <текст>\n·N покажи алфавит')
+        return
+
+    # SEND УЭАЙЖО ALPHABET
+    if message.text.startswith('N покажи алфавит'):
+        text = getAlphabet()
+        await message.reply(text)
         return
 
     # TRANSLATE TEXT TO УЭАЙЖО LANGUAGE
@@ -45,6 +52,12 @@ async def echo(message: types.Message):
         text = message.text.replace('N переведи на уэайжо ', '')
         inf = [text]
         await message.reply(translate(inf))
+        return
+
+    # TRANSLATE TEXT FROM УЭАЙЖО LANGUAGE
+    if message.text.startswith('N переведи с уэайжо'):
+        text = message.text.replace('N переведи с уэайжо ', '')
+        await message.reply(retranslate(text))
         return
 
     # CREATOR INFO
@@ -65,11 +78,11 @@ async def echo(message: types.Message):
         if text[2].lower() == 'l' or text[2].lower() == 'm' or text[2].lower() == 's' or text[2].lower() == 'large' or \
                 text[2].lower() == 'medium' or text[2].lower() == 'small':
             if text[2].lower() == 's' or text[2].lower() == 'small':
-                length = 5
+                length = random.randint(5, 15)
             if text[2].lower() == 'm' or text[2].lower() == 'medium':
-                length = 15
+                length = random.randint(20, 30)
             if text[2].lower() == 'l' or text[2].lower() == 'large':
-                length = 30
+                length = random.randint(35, 50)
         else:
             if int(text[2]) > 200:
                 await message.reply('Слишком большое сообщение для генерации. Пожалуйста введите число меньше')
@@ -92,7 +105,7 @@ async def echo(message: types.Message):
         return
 
     # IF MESSAGE CONTAINS COMMAND, THAT DOESNT EXISTS, THEN JUXT IGNORE THIS MESSAGE
-    if message.text.startswith('N'):
+    if message.text.startswith('N') or message.text.startswith('n'):
         return
 
     # REGEX CLEAR URL FROM MESSAGE
@@ -101,10 +114,12 @@ async def echo(message: types.Message):
         '', message.text, flags=re.MULTILINE)
     msg = re.sub(r'(А+Х+)+', '', msg, flags=re.MULTILINE)
     msg = re.sub(r'(а+х+)+', '', msg, flags=re.MULTILINE)
+    msg = re.sub(r'(Х+А+)+', '', msg, flags=re.MULTILINE)
+    msg = re.sub(r'(х+а+)+', '', msg, flags=re.MULTILINE)
     msg = re.sub(r'@NeuraliaRemmy_bot', '', msg, flags=re.MULTILINE)
 
     # SAVING MESSAGE
-    if msg != " " or msg != "":
+    if msg != ' ' or msg != '' or msg.__len__() != 1 or msg.__len__() != 0:
         saveData(str(message.chat.id) + '.txt', msg)
 
     # GENERATING NEW MESSAGE TO CHAT
@@ -140,11 +155,11 @@ async def bot_check():
 async def sayChangelog():
     log = open('changelog.txt', 'r', encoding='utf8').read()
     project_directory = os.getcwd()
-    file_list = os.listdir(project_directory)
-    txt_files = [file for file in file_list if file.endswith(".txt") and (str(file) != 'changelog.txt' and str(file) != 'hello.txt' and str(file) != 'stickers.txt' and str(file) != 'stickers_present.txt')]
+    chats_directory = os.path.join(project_directory, 'chats')
+    file_list = os.listdir(chats_directory)
+    txt_files = [file for file in file_list if file.endswith('.txt')]
     for chat in txt_files:
         await bot.send_message(chat_id=str(chat), text=log)
-    # -1001900122101
 
 
 if __name__ == '__main__':

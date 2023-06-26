@@ -1,7 +1,7 @@
+import re
 from typing import List
 
 dictionary = {
-    '': '',
     ' ': ' ',
     ',': ',',
     '.': '.',
@@ -42,6 +42,8 @@ dictionary = {
     'я': 'ря'
 }
 
+reversed_dictionary = {value: key for key, value in dictionary.items()}
+
 
 def translate(list: List[str]):
     for word in list:
@@ -55,4 +57,32 @@ def translate(list: List[str]):
         out += dictionary.get(letter)
     return out.capitalize()
 
-# print(translate(['Привет']).capitalize())
+
+def retranslate(text: str):
+    words = re.split(r'(\s+)', text)
+    for word in words:
+        words[words.index(word)] = word.lower()
+    out = ''
+    for word in words:
+        letter = ''
+        for i in range(word.__len__()):
+            letter += word[i]
+            if reversed_dictionary.__contains__(letter):
+                out += reversed_dictionary.get(letter)
+                letter = ''
+                continue
+            if i + 1 == word.__len__():
+                return f'Была обнаружена ошибка при переводе: буквы "{letter}" в алфавите уэайжо не существует.'
+    return out.capitalize()
+
+
+def getAlphabet():
+    out = 'Алфавит языка уэайжо выглядит следующим образом:\n'
+    for key in dictionary:
+        if key == '.' or key == ',' or key == '!' or key == '?' or key == ' ':
+            continue
+        out += f'буква "{key}" — это "{dictionary.get(key)}"\n'
+    return out
+
+# print(translate(['Привет как дела']))
+# print(retranslate('Прэгвиеожоауйы, врэуэврэ логаухвыуэ?'))
