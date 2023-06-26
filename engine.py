@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 
@@ -43,8 +45,12 @@ def count_lines(lines):
 
 # METHOD TO CHECK IS THERE ENOUGH DATA TO GENERATE A MESSAGE
 def isEnoughData(path):
+    project_directory = os.getcwd()
+    chats_directory = os.path.join(project_directory, 'chats')
+    chat = path
+    chat_path = os.path.join(chats_directory, chat)
     try:
-        file = open(path, 'r', encoding='utf8')
+        file = open(chat_path, 'r', encoding='utf8')
     except FileNotFoundError:
         return False
     count = count_lines(file.readlines())
@@ -58,7 +64,11 @@ def isEnoughData(path):
 
 # METHOD TO SAVE INCOMING MESSAGE FROM CHAR
 def saveData(path, msg):
-    file = open(path, 'a+', encoding='utf8')
+    project_directory = os.getcwd()
+    chats_directory = os.path.join(project_directory, 'chats')
+    chat = path
+    chat_path = os.path.join(chats_directory, chat)
+    file = open(chat_path, 'a+', encoding='utf8')
     file.seek(0, 2)
     file.write(msg + '\n')
     file.close()
