@@ -107,9 +107,11 @@ async def echo(message: types.Message):
             return
 
         # SEND SMART ANSWER
+        rnd = random.randint(0, 100)
         text = message.text.replace('@NeuraliaRemmy_bot', '')
         answ = GenerateAnswer(text)
         await message.reply(answ)
+        await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
         return
 
     # SEND CHANGELOG COMMAND
@@ -161,17 +163,17 @@ async def echo(message: types.Message):
 
         rnd = random.randint(0, 4)
         if rnd == 0:
-            await message.answer(GenerateAnswer(message.text).upper())
+            await message.reply(GenerateAnswer(message.text).upper())
             if random.randint(0, 100) > 60:
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
         elif rnd == 1:
-            await message.answer(msg)
+            await message.reply(msg)
             if random.randint(0, 100) > 60:
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
         else:
-            await message.answer(GenerateAnswer(message.text))
+            await message.reply(GenerateAnswer(message.text))
             if random.randint(0, 100) > 60:
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
