@@ -6,7 +6,7 @@ openai.api_key = os.environ['ChatToken']
 
 
 def GenerateAnswer(text: str):
-    prompt = 'Ответь максимально грубо и токсично с использованием русских матов: "' + text + '"'
+    prompt = 'Ответь как быдло токсично с максимально возможным использованием матов на следующее сообщение - ' + text
     completion = openai.Completion.create(
         engine='text-davinci-003',
         prompt=prompt,
