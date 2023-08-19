@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import backgroud
 from alphabet import translate, retranslate, getAlphabet
 from engine import GenerateMessage, isEnoughData, saveData
-from smart import GenerateAnswer
+from smart import smart
 from sticker import get_stickers
 
 NeuraliaToken = os.environ['NeuraliaToken']
@@ -15,6 +15,7 @@ bot = Bot(token=NeuraliaToken)
 dp = Dispatcher(bot)
 
 stickers = get_stickers()
+smart = smart()
 
 
 @dp.message_handler()
@@ -33,13 +34,47 @@ async def echo(message: types.Message):
         # LIST OF COMMANDS
         if message.text.startswith('@NeuraliaRemmy_bot что ты умеешь'):
             await message.reply(
-                'Я умею следующее:\n·say <количество слов или large (l), small (s), medium (m)>\n·отправь стикер\n·кто тебя создал\n·переведи на уэайжо <текст>\n·переведи c уэайжо <текст>\n·покажи алфавит')
+                'Я умею следующее:\n·say <количество слов или large (l), small (s), medium (m)>\n·отправь стикер\n·кто тебя создал\n·переведи на уэайжо <текст>\n·переведи c уэайжо <текст>\n·покажи алфавит\n·покажи активный режим\n·покажи режимы\n·измени режим на\n·добавь новый режим')
             return
 
         # SEND УЭАЙЖО ALPHABET
         if message.text.startswith('@NeuraliaRemmy_bot покажи алфавит'):
             text = getAlphabet()
             await message.reply(text)
+            return
+
+        # SEND ACTIVE MODE
+        if message.text.startswith('@NeuraliaRemmy_bot покажи активный режим'):
+            await message.reply(f'Сейчас активный режим - {smart.active_mode}')
+            return
+
+        # SEND MODES LIST
+        if message.text.startswith('@NeuraliaRemmy_bot покажи режимы'):
+            answ = 'Имеются следующие режимы:'
+            for mode in smart.mode_list:
+                answ += f'\n·{mode}'
+            await message.reply(answ)
+            return
+
+        # CHANGE ACTIVE MODE
+        if message.text.startswith('@NeuraliaRemmy_bot измени режим на'):
+            mode = message.text.replace('@NeuraliaRemmy_bot измени режим на ', '')
+            if smart.mode_list.__contains__(mode):
+                smart.active_mode = mode
+                await message.reply(f'Режим успешно изменен на {mode}')
+                return
+            else:
+                await message.reply('Данного режима не существует!')
+                return
+
+        # ADD NEW MODE
+        if message.text.startswith('@NeuraliaRemmy_bot добавь новый режим'):
+            if message.from_user.id != 575213063:
+                await message.reply(f'У вас нет прав на выполнение данной команды!')
+                return
+            mode = message.text.replace('@NeuraliaRemmy_bot добавь новый режим ', '')
+            smart.AddMode(mode)
+            await message.reply(f'Успешно добавлен новый режим - {mode}')
             return
 
         # TRANSLATE TEXT TO УЭАЙЖО LANGUAGE
@@ -109,7 +144,7 @@ async def echo(message: types.Message):
         # SEND SMART ANSWER
         rnd = random.randint(0, 100)
         text = message.text.replace('@NeuraliaRemmy_bot', '')
-        answ = GenerateAnswer(text)
+        answ = smart.GenerateAnswer(text)
         await message.reply(answ)
         await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
         return
@@ -163,7 +198,7 @@ async def echo(message: types.Message):
 
         rnd = random.randint(0, 4)
         if rnd == 0:
-            await message.reply(GenerateAnswer(message.text).upper())
+            await message.reply(smart.GenerateAnswer(message.text).upper())
             if random.randint(0, 100) > 60:
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
@@ -173,7 +208,7 @@ async def echo(message: types.Message):
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
         else:
-            await message.reply(GenerateAnswer(message.text))
+            await message.reply(smart.GenerateAnswer(message.text))
             if random.randint(0, 100) > 60:
                 await bot.send_sticker(chat_id=message.chat.id, sticker=random.choice(stickers))
             return
