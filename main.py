@@ -60,7 +60,7 @@ async def echo(message: types.Message):
         if message.text.startswith('@NeuraliaRemmy_bot измени режим на'):
             mode = message.text.replace('@NeuraliaRemmy_bot измени режим на ', '')
             if smart.mode_list.__contains__(mode):
-                smart.active_mode = mode
+                smart.SetMode(mode)
                 await message.reply(f'Режим успешно изменен на {mode}')
                 return
             else:
